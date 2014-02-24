@@ -22,7 +22,7 @@ public class WebServicesAdapter {
 	JSONObject json;
 	JSONArray jsonArray;
 	IntentFilter intentFilter;
-	int JSONVersion;
+	int JSONVersion=0;
 	HashMap <String, String> updateDatesWeb = new HashMap <String,String>();;
 		
 	
@@ -62,10 +62,10 @@ public class WebServicesAdapter {
 	
 	
 	
-	public void checkPubUpdate() {
+	public Boolean checkPubUpdate() {
 		
 		Log.d("WebServicesAdapter","In checkPubUpdate", null);// for testing	
-		
+		Boolean wiFiOK = false;
 		//Check wifi connection
 		ConnectivityManager connManager = (ConnectivityManager) 
 				mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -86,11 +86,13 @@ public class WebServicesAdapter {
 					e.printStackTrace();
 					}	
 				}
+			wiFiOK = true;
 			}
 		else{
 			Log.d("WebServicesAdapter", "checkPubUpdate-WiFi NOT connected");// for testing
-			// Do nothing further
+			wiFiOK = false;
 		}
+		return wiFiOK;
 	}
 	
 	
@@ -119,16 +121,6 @@ public class WebServicesAdapter {
 			
            db = new DatabaseAdapter(mContext);
             
-           if (db.getSharedPrefVersion()==0){
-			//if (db.getDBVersionNumber()==0){
-				//db.setVersionNumber(1);//********************************* 
-        	   Log.d("WebServicesAdapter", "In if(db.getSharedPrefVersion()) "+db.getSharedPrefVersion());// for testing
-        	   db.setSharedPrefVersion(1);//*****************************
-        	   Log.d("WebServicesAdapter", "In if(db.getSharedPrefVersion()) DATABASE_VERSION = "+db.getDATABASE_VERSION());// for testing
-        	   Log.d("WebServicesAdapter", "In if(db.getSharedPrefVersion()) sharedPrefVersion = "+db.getSharedPrefVersion());// for testing
-        	   // Cursor c = db.getAllBeerGardens(); // for testing	
-        	   //db.DebugValues(c);
-           }
 			
 			for (int i=0; i<jsonArray.length();i++){
 				JSONObject json = new JSONObject();
@@ -164,6 +156,16 @@ public class WebServicesAdapter {
 			Log.d("WebServicesAdapter", "Inserted JSON into DB");// for testing	
 			wiFiOK = true;
 			
+			if (db.getSharedPrefVersion()==0){
+				//if (db.getDBVersionNumber()==0){
+				//db.setVersionNumber(1);//********************************* 
+				Log.d("WebServicesAdapter", "In if(db.getSharedPrefVersion()) "+db.getSharedPrefVersion());// for testing
+				db.setSharedPrefVersion(1);//*****************************
+				Log.d("WebServicesAdapter", "In if(db.getSharedPrefVersion()) DATABASE_VERSION = "+db.getDATABASE_VERSION());// for testing
+				Log.d("WebServicesAdapter", "In if(db.getSharedPrefVersion()) sharedPrefVersion = "+db.getSharedPrefVersion());// for testing
+				// Cursor c = db.getAllBeerGardens(); // for testing	
+				//db.DebugValues(c);
+				}
 			//Log.d("WebServicesAdapter", "VersionNumber is now "
 					//+db.getDBVersionNumber());// for testing	
 			
@@ -171,10 +173,11 @@ public class WebServicesAdapter {
 		else{
 			Log.d("WebServicesAdapter", "getAllPubDetails-WiFi NOT connected");// for testing	
 			wiFiOK = false;
-			 
 		}
 		return wiFiOK;
 	}
+	
+	
 	
 	
 	
@@ -233,8 +236,6 @@ public class WebServicesAdapter {
 						
 			Log.d("WebServicesAdapter", "Inserted singlePUbDetails JSON into DB");// for testing	
 			wiFiOK = true;
-			
-			
 			
 			}
 		else{

@@ -224,11 +224,12 @@ containing a value of this type.
         public static final int ic_plusone_standard_off_client=0x7f02001b;
         public static final int ic_plusone_tall_off_client=0x7f02001c;
         public static final int pub_label2=0x7f02001d;
-        public static final int pub_label3=0x7f02001e;
-        public static final int pub_label4=0x7f02001f;
-        public static final int pub_link2=0x7f020020;
-        public static final int pub_pin1=0x7f020021;
-        public static final int splash=0x7f020022;
+        public static final int pub_label2_large=0x7f02001e;
+        public static final int pub_label3=0x7f02001f;
+        public static final int pub_label4=0x7f020020;
+        public static final int pub_link2=0x7f020021;
+        public static final int pub_pin1=0x7f020022;
+        public static final int splash=0x7f020023;
     }
     public static final class id {
         public static final int distance=0x7f060008;
@@ -249,6 +250,7 @@ containing a value of this type.
         public static final int activity_mapview=0x7f030001;
         public static final int activity_splash=0x7f030002;
         public static final int map_info_window=0x7f030003;
+        public static final int map_info_window_large=0x7f030004;
     }
     public static final class menu {
         public static final int activity_splash=0x7f0b0000;

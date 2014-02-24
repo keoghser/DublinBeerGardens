@@ -1,5 +1,6 @@
 package com.maestromob.dublinbeergardens;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -45,23 +47,29 @@ public class MapView extends FragmentActivity implements LocationListener{
 	public Set<PubName> pubName2;
 	public PubView pubView;
 	String wifi;
+	Boolean wiFi;
 	DatabaseAdapter db;	
 	GoogleMap mMap;
-	LocationManager locationManager;
-	LocationListener locationListener;
+
+	private LocationManager locationManager;
+	private String provider;
+	Location currentLocation;
+	Location pubLocation;
 	double currentLatitude;
 	double currentLongitude;
-	Location mCurrentLocation;
-	LocationClient mLocationClient;
+
+	
 	
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 	    
 	    if(getIntent().getBooleanExtra("wifi", false)){
-	    	 wifi = "TRUE";
+	    	wifi = "TRUE";
+	    	wiFi = true;
 	    	}else{
 	    	 wifi = "FALSE";
+	    	 wiFi = false;
 	    	 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    	 builder.setTitle("Wi Fi");
 	    	 builder.setMessage("Cannot connect to web-services, please try again later");
@@ -82,39 +90,50 @@ public class MapView extends FragmentActivity implements LocationListener{
 	    
 	    Log.d("Mapview", "wifi is "+wifi);
 	   
-	    if(GoogleServicesOK()){
-	    	setContentView(R.layout.activity_mapview);
-	    	
-	    	if (initMap()){
-	    		//Toast.makeText(this, "Ready to Map!", Toast.LENGTH_SHORT).show(); // for testing
-	    		mMap.setMyLocationEnabled(true);
-	    		} else {
-	    		//Toast.makeText(this, "Map not available", Toast.LENGTH_SHORT).show(); // for testing
-	    		}
-	    } else {
-	    		setContentView(R.layout.activity_main);
-	    }
-	   
-	    
-	    db = new DatabaseAdapter(this);
-    	db.open();      // for testing  	
-        Cursor c = db.getAllBeerGardens(); // for testing
-        
-        c.moveToFirst();
-	    do {
-	    	String markerName = c.getString(1);
-	    	double easting = c.getDouble(3);
-	    	double northing = c.getDouble(4);
-	    	
-	    			
-	    	LatLng latlng = new LatLng(easting,northing);
-	    	Marker marker = mMap.addMarker(new MarkerOptions()
-	    						.position(latlng)
-	    						.title(markerName)
-	    						.snippet("Distance: 1.0 km")
-	    						.icon(BitmapDescriptorFactory.fromResource
-	    								(R.drawable.pub_pin1)));
-	    } while (c.moveToNext());
+	    if (wiFi) {
+			if (GoogleServicesOK()) {
+				setContentView(R.layout.activity_mapview);
+
+				if (initMap()) {
+					//Toast.makeText(this, "Ready to Map!", Toast.LENGTH_SHORT).show(); // for testing
+					mMap.setMyLocationEnabled(true);// shows my Location icon on screen
+
+					// Get the location manager
+					locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+
+					// Define the criteria how to select the location provider -> use default
+					Criteria criteria = new Criteria();
+					provider = locationManager.getBestProvider(criteria, false);
+					currentLocation = locationManager.getLastKnownLocation(provider);
+					onLocationChanged(currentLocation);
+
+				} else {
+					//Toast.makeText(this, "Map not available", Toast.LENGTH_SHORT).show(); // for testing
+				}
+			} else {
+				setContentView(R.layout.activity_main);
+			}
+			db = new DatabaseAdapter(this);
+			db.open(); // for testing  	
+			Cursor c = db.getAllBeerGardens(); // for testing
+			c.moveToFirst();
+			do {
+				String markerName = c.getString(1);
+				double easting = c.getDouble(3);
+				double northing = c.getDouble(4);
+				LatLng latlng = new LatLng(easting, northing);
+
+				Marker marker = mMap.addMarker(new MarkerOptions()
+						.position(latlng)
+						.title(markerName)
+						.snippet(
+								"Distance: "
+										+ CalculatePubDistance(easting,
+												northing) + "km")
+						.icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.pub_pin1)));
+			} while (c.moveToNext());
+		}
         	            
         //db.DisplayValues(c);// for testing
 	}
@@ -151,14 +170,26 @@ public class MapView extends FragmentActivity implements LocationListener{
 					
 					@Override
 					public View getInfoWindow(Marker marker) {
-						View v = getLayoutInflater().inflate(R.layout.map_info_window, null);
-						TextView tvPubName = (TextView)v.findViewById(R.id.pubname);
-						TextView tvDistance = (TextView)v.findViewById(R.id.distance);
+						View v;
+						if (marker.getTitle().length()<12){
+							v = getLayoutInflater().inflate(R.layout.map_info_window, null);
+							} else {
+							v = getLayoutInflater().inflate(R.layout.map_info_window_large, null);	
+							}
+						TextView textViewPubName = (TextView)v.findViewById(R.id.pubname);
+						TextView textViewDistance = (TextView)v.findViewById(R.id.distance);
 						
 						LatLng ll = marker.getPosition();
 						
-						tvPubName.setText(marker.getTitle());
-						tvDistance.setText(marker.getSnippet());
+						if (marker.getTitle().length()<19){
+							textViewPubName.setText(marker.getTitle());
+							textViewDistance.setText(marker.getSnippet());
+							}else {
+							String shortName = marker.getTitle().substring(0, 16)+"..";
+							textViewPubName.setText(shortName);
+							textViewDistance.setText(marker.getSnippet());	
+							}
+						
 						return v;
 						
 					}
@@ -169,30 +200,48 @@ public class MapView extends FragmentActivity implements LocationListener{
 					}
 				});
 			}
-			
-			
 		}
 		return (mMap!=null);
 	}
 	
-	
-	public void GetCurrentLocation(){
-		locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-		}
+
 
 
 
 
 	
 	public void onLocationChanged(Location location) {
-		currentLatitude = location.getLatitude();
-		currentLongitude = location.getLongitude();
+		currentLatitude =  location.getLatitude();
+		currentLongitude =  location.getLongitude();
+		Toast.makeText(this, "Current Location is " +currentLatitude+" "+currentLongitude ,
+			        Toast.LENGTH_LONG).show();
 		Log.d("LocationProvider","currentLatitude is "+currentLatitude);
 		Log.d("LocationProvider","currentLongitude is "+currentLongitude);
 		}
+	
 
+	 
+	
+	// Request updates at startup */
+	protected void onResume() {
+		super.onResume();
+		if (wiFi){
+			locationManager.requestLocationUpdates(provider, 25000, 5, this);
+			}
+	  	}
+	
+	
 
+	
+	// Remove the locationlistener updates when Activity is paused */
+	protected void onPause() {
+	    super.onPause();
+	    if (wiFi){
+	    	locationManager.removeUpdates(this);
+	    	}
+	  	}
+	
+	
 
 
 	
@@ -215,22 +264,22 @@ public class MapView extends FragmentActivity implements LocationListener{
 		Log.d("LocationProvider","Status changed");
 		}
 
-
-
-
-	@Override
-	public void onConnected(Bundle arg0) {
-		// TODO Auto-generated method stub
+	
+	
+	public String CalculatePubDistance (double pubLatitude, double pubLongitude){
 		
-	}
+		pubLocation = new Location("pub");
 
+		pubLocation.setLatitude(pubLatitude);
+		pubLocation.setLongitude(pubLongitude);
 
-
-
-	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
+		float dist = currentLocation.distanceTo(pubLocation);
+		double distance = (double) dist/1000;
+		distance = Math.round(distance*100.0)/100.0;
 		
+		DecimalFormat df = new DecimalFormat("0.00");
+	
+		return df.format(distance);
 	}
 	
 	

@@ -103,36 +103,41 @@ public class Splash extends Activity {
 	 			    			//Get new pubDetails
 	 			    				if(!web.getAllPubDetails()){
 	 			    					Log.d("Splash", "getAllPubDetails is not ok");// for testing
-	 			    					wiFiOk = false;
-		 			    				}
+	 			    					}
 			 			    } else {
-			 			    	web.checkPubUpdate();//Activated all other times
-			 			    	updateDatesWeb = web.getUpdateDatesWeb();
-				 			 
-				 				db.open();
-				 				Cursor c = db.getUpdateDates(); 
-				 				c.moveToFirst();
-					    	    do {
-					    	    	AddToUpdateDatesDB(c.getString(0),c.getString(1));
-					    	    } while (c.moveToNext());
-					    	    updateDatesWeb = web.getUpdateDatesWeb();
-					    	    Log.d("Splash", "updateDatesWeb is "+updateDatesWeb.get("Gibneys"));// for testing 
-					    	    Log.d("Splash", "updateDatesDB is "+updateDatesDB.get("Gibneys"));// for testing
-					    	    CompareUpdateDates();
-					    	    
-					    	    if (outOfDatePubs.size()>0){
-					    	    	for(int i=0;i<outOfDatePubs.size();i++){
-					    	    	if(!web.getSinglePubDetails((String)outOfDatePubs.get(i))){
-	 			    					Log.d("Splash", "getSinglePubDetails is not ok");// for testing
-	 			    					wiFiOk = false;
-		 			    					}
-					    	    		}
-					    	    	}
-					    	    try {
-									Thread.sleep(splashLength);
-						    	 	} catch (InterruptedException e) {
-									e.printStackTrace();
-							}
+			 			    	if (JSONVersion!=0) {
+									if (web.checkPubUpdate()) {
+										updateDatesWeb = web.getUpdateDatesWeb();
+										db.open();
+										Cursor c = db.getUpdateDates();
+										c.moveToFirst();
+										do {
+											AddToUpdateDatesDB(c.getString(0),c.getString(1));
+										} while (c.moveToNext());
+										//updateDatesWeb = web.getUpdateDatesWeb();
+										Log.d("Splash", "updateDatesWeb is "
+												+ updateDatesWeb.get("Gibneys"));// for testing 
+										Log.d("Splash", "updateDatesDB is "
+												+ updateDatesDB.get("Gibneys"));// for testing
+										CompareUpdateDates();
+										if (outOfDatePubs.size() > 0) {
+											for (int i = 0; i < outOfDatePubs.size(); i++) {
+												if (!web.getSinglePubDetails((String) outOfDatePubs.get(i))) {
+													Log.d("Splash",
+															"getSinglePubDetails is not ok");// for testing
+													wiFiOk = false;
+												}
+											}
+										}
+										try {
+											Thread.sleep(splashLength);
+										} catch (InterruptedException e) {
+											e.printStackTrace();
+										}
+									} else {
+										wiFiOk = false;
+									}
+								}
 					    	 
 			 			 }
 	 			    }
