@@ -103,9 +103,13 @@ public class Splash extends Activity {
 	 			    			//Get new pubDetails
 	 			    				if(!web.getAllPubDetails()){
 	 			    					Log.d("Splash", "getAllPubDetails is not ok");// for testing
+	 			    					try {
+											Thread.sleep(splashLength);
+											} catch (InterruptedException e) {
+											e.printStackTrace();
+											}
 	 			    					}
-			 			    } else {
-			 			    	if (JSONVersion!=0) {
+			 			    } else if (JSONVersion!=0) {
 									if (web.checkPubUpdate()) {
 										updateDatesWeb = web.getUpdateDatesWeb();
 										db.open();
@@ -129,22 +133,22 @@ public class Splash extends Activity {
 												}
 											}
 										}
-										try {
-											Thread.sleep(splashLength);
-										} catch (InterruptedException e) {
-											e.printStackTrace();
-										}
 									} else {
 										wiFiOk = false;
 									}
-								}
-					    	 
-			 			 }
-	 			    }
-	        	 }
-	        	 //Set minimum splash screen duration if webservices too quick
-	        	 return null;
-	         }
+								}//end if
+			 			    else{
+			 			    	try {
+									Thread.sleep(splashLength);
+									} catch (InterruptedException e) {
+									e.printStackTrace();
+									}
+			 			    }
+					    
+	 			    }//end else
+	        	 }//end createdatabase
+	        	return null;
+	         }//end doInBackground
 
 	         
 	         protected void onPostExecute(Void params){

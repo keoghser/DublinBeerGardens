@@ -50,7 +50,7 @@ public class MapView extends FragmentActivity implements LocationListener{
 	Boolean wiFi;
 	DatabaseAdapter db;	
 	GoogleMap mMap;
-
+	Cursor cursor;
 	private LocationManager locationManager;
 	private String provider;
 	Location currentLocation;
@@ -65,27 +65,12 @@ public class MapView extends FragmentActivity implements LocationListener{
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 	    
 	    if(getIntent().getBooleanExtra("wifi", false)){
-	    	wifi = "TRUE";
-	    	wiFi = true;
+		    	wifi = "TRUE";
+		    	wiFi = true;
 	    	}else{
-	    	 wifi = "FALSE";
-	    	 wiFi = false;
-	    	 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    	 builder.setTitle("Wi Fi");
-	    	 builder.setMessage("Cannot connect to web-services, please try again later");
-	    	 builder.setPositiveButton("OK",
-	    			 new DialogInterface.OnClickListener() {
-	    		 @Override
-	    		 public void onClick(DialogInterface arg0, int arg1) {
-	    			 // TODO Auto-generated method stub
-	    			 Toast.makeText(getApplicationContext(),
-	    					 "Exiting App", Toast.LENGTH_LONG).show();
-	    			 //Exit App
-	    			 finish();          
-	    	         moveTaskToBack(true);
-	    		 }
-	    	 });
-	    	 builder.show(); //To show the AlertDialog
+		    	 wifi = "FALSE";
+		    	 wiFi = false;
+		    	 noWifiExitApp();
 	    	}
 	    
 	    Log.d("Mapview", "wifi is "+wifi);
@@ -95,7 +80,6 @@ public class MapView extends FragmentActivity implements LocationListener{
 				setContentView(R.layout.activity_mapview);
 
 				if (initMap()) {
-					//Toast.makeText(this, "Ready to Map!", Toast.LENGTH_SHORT).show(); // for testing
 					mMap.setMyLocationEnabled(true);// shows my Location icon on screen
 
 					// Get the location manager
@@ -105,43 +89,25 @@ public class MapView extends FragmentActivity implements LocationListener{
 					Criteria criteria = new Criteria();
 					provider = locationManager.getBestProvider(criteria, false);
 					currentLocation = locationManager.getLastKnownLocation(provider);
+					locationManager.requestLocationUpdates(provider, 5000, 5, this);
 					onLocationChanged(currentLocation);
 
 				} else {
-					//Toast.makeText(this, "Map not available", Toast.LENGTH_SHORT).show(); // for testing
+					Toast.makeText(this, "Map not available", Toast.LENGTH_SHORT).show(); // for testing
 				}
 			} else {
 				setContentView(R.layout.activity_main);
 			}
 			db = new DatabaseAdapter(this);
 			db.open(); // for testing  	
-			Cursor c = db.getAllBeerGardens(); // for testing
-			c.moveToFirst();
-			do {
-				String markerName = c.getString(1);
-				double easting = c.getDouble(3);
-				double northing = c.getDouble(4);
-				LatLng latlng = new LatLng(easting, northing);
-
-				Marker marker = mMap.addMarker(new MarkerOptions()
-						.position(latlng)
-						.title(markerName)
-						.snippet(
-								"Distance: "
-										+ CalculatePubDistance(easting,
-												northing) + "km")
-						.icon(BitmapDescriptorFactory
-								.fromResource(R.drawable.pub_pin1)));
-			} while (c.moveToNext());
+			cursor = db.getAllBeerGardens(); // for testing
+			ShowMarkers();
 		}
-        	            
-        //db.DisplayValues(c);// for testing
-	}
+   }
 
-	 
-	
-	
-	public boolean GoogleServicesOK(){
+
+
+public boolean GoogleServicesOK(){
 		int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 	
 		if (isAvailable==ConnectionResult.SUCCESS){
@@ -168,7 +134,6 @@ public class MapView extends FragmentActivity implements LocationListener{
 			if(mMap!=null){
 				mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 					
-					@Override
 					public View getInfoWindow(Marker marker) {
 						View v;
 						if (marker.getTitle().length()<12){
@@ -191,10 +156,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 							}
 						
 						return v;
-						
 					}
 					
-					@Override
 					public View getInfoContents(Marker Arg0) {
 						return null;
 					}
@@ -226,7 +189,8 @@ public class MapView extends FragmentActivity implements LocationListener{
 	protected void onResume() {
 		super.onResume();
 		if (wiFi){
-			locationManager.requestLocationUpdates(provider, 25000, 5, this);
+			locationManager.requestLocationUpdates(provider, 60000, 5, this);
+			Toast.makeText(this, "Location is "+currentLatitude+", "+currentLongitude, Toast.LENGTH_LONG).show();
 			}
 	  	}
 	
@@ -265,23 +229,62 @@ public class MapView extends FragmentActivity implements LocationListener{
 		}
 
 	
+	public void ShowMarkers (){
+		cursor.moveToFirst();
+		do {
+			String markerName = cursor.getString(1);
+			double easting = cursor.getDouble(3);
+			double northing = cursor.getDouble(4);
+			LatLng latlng = new LatLng(easting, northing);
+
+			Marker marker = mMap.addMarker(new MarkerOptions()
+					.position(latlng)
+					.title(markerName)
+					.snippet(
+							"Distance: "
+									+ CalculatePubDistance(easting,
+											northing) + "km")
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.pub_pin1)));
+		} while (cursor.moveToNext());
+	}
+	
+	
+	
+	
 	
 	public String CalculatePubDistance (double pubLatitude, double pubLongitude){
 		
 		pubLocation = new Location("pub");
-
 		pubLocation.setLatitude(pubLatitude);
 		pubLocation.setLongitude(pubLongitude);
-
 		float dist = currentLocation.distanceTo(pubLocation);
 		double distance = (double) dist/1000;
 		distance = Math.round(distance*100.0)/100.0;
-		
 		DecimalFormat df = new DecimalFormat("0.00");
-	
 		return df.format(distance);
 	}
 	
 	
+	
+	
+	private void noWifiExitApp() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Wi Fi");
+		builder.setMessage("Cannot connect to web-services, please try again later");
+		builder.setPositiveButton("OK",
+				new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				
+				Toast.makeText(getApplicationContext(),
+						"Exiting App", Toast.LENGTH_LONG).show();
+				//Exit App
+				finish();          
+				moveTaskToBack(true);
+			}
+		});
+		builder.show(); //To show the AlertDialog
+	}
 }
 
