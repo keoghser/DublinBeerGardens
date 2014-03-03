@@ -18,7 +18,8 @@
          android:layout_marginLeft="10dp"
          android:textColor="@android:color/white"
          android:textSize="14dp"
-         android:textStyle="bold" />
+         android:textStyle="bold"/>
+     
     <TextView
         android:id="@+id/distance"
         android:layout_width="wrap_content"
@@ -27,14 +28,14 @@
         android:layout_marginLeft="10dp"
         android:layout_below="@id/pubname"
         android:textColor="@android:color/white"
-        android:textSize="11dp" />
+        android:textSize="11dp"/>
 
      <ImageView
          android:layout_width="15dp"
          android:layout_height="15dp"
          android:src="@drawable/pub_link2" 
          android:layout_marginLeft="105dp"
-         android:layout_marginTop="13dp"/>
+         android:layout_marginTop="13dp"
+         android:id="@+id/pubDetails1"/>
 
-   
 </RelativeLayout>
