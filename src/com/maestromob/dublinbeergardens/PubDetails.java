@@ -1,69 +1,79 @@
 package com.maestromob.dublinbeergardens;
 
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.maestromob.dublinbeergardens.PubDetailsFragmentImage.OnDataTransferedImage;
+import com.maestromob.dublinbeergardens.PubDetailsFragmentInfo.OnDataTransferedInfo;
 
 
-public class PubDetails extends FragmentActivity {
+public class PubDetails extends FragmentActivity 
+			implements OnDataTransferedInfo, OnDataTransferedImage {
 
-	private ImageView beerGardenView;
 	Typeface typeFace;
 	Typeface boldTypeFace;
+	String pubClicked = "";
+	FragmentManager fm;
 	
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		pubClicked = getIntent().getStringExtra("pubClicked");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_pub_details);
 		
-		//typeFace = Typeface.createFromAsset(getAssets(),"fonts/HelveticaNeue.ttf");
-		//boldTypeFace = Typeface.createFromAsset(getAssets(),"fonts/HelveticaNeueBold.ttf");
-		typeFace = Typeface.createFromAsset(getAssets(),"fonts/Roboto-Regular.ttf");
-		boldTypeFace = Typeface.createFromAsset(getAssets(),"fonts/Roboto-Bold.ttf");
-		
-		String image = "Stags_head.png";
-		String pathToImageFile = Environment.getExternalStorageDirectory()
-				.getAbsoluteFile()+"/BeerGardens/"+image;
-		
-		beerGardenView = (ImageView) findViewById(R.id.beergardenImage);
-		beerGardenView.setImageBitmap(BitmapFactory.decodeFile(pathToImageFile));
-		
-		TextView pubTitle = (TextView) findViewById(R.id.beergardenTitle);
-		pubTitle.setTypeface(boldTypeFace);
-		pubTitle.setText("Croke Park Hotel"+"");
-		
-		TextView pubAddress = (TextView) findViewById(R.id.beergardenAddress);
-		pubAddress.setTypeface(typeFace);
-		pubAddress.setText("Address: "+"");
-		
-		/*TextView pubDescription = (TextView) findViewById(R.id.beergardenDescription);
-		pubDescription.setTypeface(typeFace);
-		pubDescription.setText("Address: "+"");
-		
-		TextView pubSize = (TextView) findViewById(R.id.beergardenSize);
-		pubSize.setTypeface(typeFace);
-		pubSize.setText("Address: "+"");
-		
-		TextView pubSeating = (TextView) findViewById(R.id.beergardenSeating);
-		pubSeating.setTypeface(typeFace);
-		pubSeating.setText("Address: "+"");
-		
-		TextView pubPhone = (TextView) findViewById(R.id.beergardenPhone);
-		pubPhone.setTypeface(typeFace);
-		pubPhone.setText("Address: "+"");
-		
-		TextView pubWeblink = (TextView) findViewById(R.id.beergardenWeb);
-		pubWeblink.setTypeface(typeFace);
-		pubWeblink.setText("Address: "+"");*/
-		
-		
-		
+		fm = getSupportFragmentManager();
+		AddHideListener(R.id.beergardenImage, fm.findFragmentById(R.id.info_fragment));
+		AddShowListener(R.id.beergardenImageLarge, fm.findFragmentById(R.id.info_fragment));
 	}
-
+	
+	public String onDataTransferInfo() {
+		return pubClicked;
+	}
+	
+	public String onDataTransferImage() {
+		return pubClicked;
+	}
+	
+	
+	
+	public void AddShowListener(int imageClicked, final Fragment fragment) {
+		final ImageView v1 = (ImageView) findViewById(imageClicked);
+		v1.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+		        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		        ft.setCustomAnimations(R.anim.translate_in, R.anim.translate_out);
+		        ft.show(fragment);
+		        fragment.getView().findViewById(R.id.beergardenWeb).setClickable(true);
+		        fragment.getView().findViewById(R.id.beergardenPhone).setClickable(true);
+		        ft.commit();
+		        }
+			});
+		}
+	
+	
+	public void AddHideListener(int imageClicked, final Fragment fragment) {
+		final ImageView v2 = (ImageView) findViewById(imageClicked);
+		v2.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+		        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		        ft.setCustomAnimations(R.anim.translate_in, R.anim.translate_out);
+		        ft.hide(fragment);
+		        fragment.getView().findViewById(R.id.beergardenWeb).setClickable(false);
+		        fragment.getView().findViewById(R.id.beergardenPhone).setClickable(false);
+		        ft.commit();
+				
+		     }
+			});
+		}
 }

@@ -1,6 +1,7 @@
 package com.maestromob.dublinbeergardens;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.Set;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.maestromob.dublinbeergardens.PubDetailsFragmentInfo.OnDataTransferedInfo;
 import com.maestromob.dublinbeergardens.helpers.DatabaseAdapter;
 
 
@@ -46,7 +48,7 @@ import com.maestromob.dublinbeergardens.helpers.DatabaseAdapter;
 
 public class MapView extends FragmentActivity implements 
 		GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
+		GooglePlayServicesClient.OnConnectionFailedListener,LocationListener{
 	
 	private static final int GPS_ERRORDIALOG_REQUEST = 9000;
 	String wifi;
@@ -60,6 +62,7 @@ public class MapView extends FragmentActivity implements
 	LatLng latlng;
 	double currentLatitude;
 	double currentLongitude;
+	String pubClicked;
 	Typeface typeFace;
 	Typeface boldTypeFace;
 
@@ -136,6 +139,8 @@ public class MapView extends FragmentActivity implements
 					
 					public View getInfoWindow(Marker marker) {
 						View v;
+						HashMap <String, Integer> mMarkers = new HashMap<String, Integer>();
+						
 						if (marker.getTitle().length()<12){
 							v = getLayoutInflater().inflate(R.layout.map_info_window, null);
 							} else {
@@ -163,8 +168,10 @@ public class MapView extends FragmentActivity implements
 						mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			                 
 			                public void onInfoWindowClick(Marker marker) {
-			                	Log.d("Mapview", "In Click Window"); // for testing  
+			                	Log.d("Mapview", "In Click Window"); // for testing 
 			                	Intent i = new Intent(getBaseContext(),PubDetails.class);
+			                	pubClicked = marker.getTitle();
+			                	i.putExtra("pubClicked", pubClicked);
 			                	startActivity(i);
 			                }
 			            });
@@ -298,8 +305,13 @@ public class MapView extends FragmentActivity implements
 
 
 	public void onPause(){
-		mLocationClient.removeLocationUpdates(this);
-	    super.onPause();
+		try {
+			mLocationClient.removeLocationUpdates(this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		super.onPause();
 	} 
 	
 
@@ -307,6 +319,8 @@ public class MapView extends FragmentActivity implements
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		Log.d("LocationProvider","Status changed");
 	}
+
+	
 	
 	
 }

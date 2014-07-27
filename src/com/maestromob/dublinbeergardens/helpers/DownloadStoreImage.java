@@ -85,7 +85,7 @@ public class DownloadStoreImage {
     private File getOutputMediaFile(String title){
     	 
     		File mediaStorageDir = new File((Environment.getExternalStorageDirectory())
-    				.getAbsoluteFile()+"/BeerGardens");
+    				.getAbsoluteFile()+"/Beergardens");
     		Log.d("DownloadStoreImage", "mediaStorageDir created " );
     		
 
@@ -102,8 +102,9 @@ public class DownloadStoreImage {
     	    // Create a media file name
     	    String timeStamp = new SimpleDateFormat("ddMMyyyy").format(new Date());
     	    File mediaFile;
-    	    //String mImageName="MI_"+ timeStamp +".jpg";
-    	    String imageName=title+"_"+timeStamp+".jpg";
+    	    
+    	    //String imageName=title+"_"+timeStamp+".jpg";//****** Change this to .png before completion*****/
+    	    String imageName=title;//****** Change this to .png before completion*****/
     	    Log.d("DownloadStoreImage", "ImageName created "+ imageName);
     	    mediaFile = new File(mediaStorageDir.getPath() + File.separator + imageName);  
     	    return mediaFile;

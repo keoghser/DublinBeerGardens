@@ -90,6 +90,7 @@ public class Splash extends Activity {
 	 			    			}
 	 			    		}
 	 			    	else {
+	 			    		Log.d("Splash", "Got in here because sharedPrefVersion >0");// for testing
 	 			    		int JSONVersion = web.checkJSONVersion();
 	 			    			 			    		
 	 			    		if(JSONVersion>sharedPrefVersion){
@@ -119,10 +120,10 @@ public class Splash extends Activity {
 											AddToUpdateDatesDB(c.getString(0),c.getString(1));
 										} while (c.moveToNext());
 										//updateDatesWeb = web.getUpdateDatesWeb();
-										Log.d("Splash", "updateDatesWeb is "
-												+ updateDatesWeb.get("Gibneys"));// for testing 
-										Log.d("Splash", "updateDatesDB is "
-												+ updateDatesDB.get("Gibneys"));// for testing
+//										Log.d("Splash", "updateDatesWeb is "
+//												+ updateDatesWeb.get("Gibneys"));// for testing 
+//										Log.d("Splash", "updateDatesDB is "
+//												+ updateDatesDB.get("Gibneys"));// for testing
 										CompareUpdateDates();
 										if (outOfDatePubs.size() > 0) {
 											for (int i = 0; i < outOfDatePubs.size(); i++) {

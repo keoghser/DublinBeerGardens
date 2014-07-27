@@ -133,11 +133,11 @@ public class WebServicesAdapter {
 					//Install all details from webservices
 					db.open();
 					long id = db.insertPubDetails(json.getString("name"), json.getString("address"), 
-							json.getDouble("locationEast"), json.getDouble("locationNorth"), 
-							json.getInt("seatingCapacity"), json.getString("phone"), 
+							json.getDouble("locationEast"),json.getDouble("locationNorth"), 
+							json.getInt("seatingCapacity"),json.getString("phone"), 
 							json.getString("gardenSize"),json.getString("url"), 
-							json.getString("imageLink"), json.getString("description"), 
-							json.getString("updatedate"));
+							json.getString("imageLink"),json.getString("imageLinkLogo"),
+							json.getString("description"),json.getString("updatedate"));
 					} catch (JSONException e) {
 					e.printStackTrace();
 					}
@@ -145,9 +145,23 @@ public class WebServicesAdapter {
 					DownloadStoreImage bitmapImage = new DownloadStoreImage
 										(json.getString("imageLink"));
 					Bitmap image = bitmapImage.getImage();
-					Log.d("WebServicesAdapter", "Bitmap image downloaded "+json.getString("imageLink"));// for testing
-					bitmapImage.StoreImage(image,json.getString("name"));
-					Log.d("WebServicesAdapter", "Bitmap image stored");// for testing
+					Log.d("WebServicesAdapter", "Bitmap image downloaded "+json.getString(
+							"imageLink"));// for testing
+					String imageFile = getImageFileName(json.getString("imageLink"));
+					bitmapImage.StoreImage(image,imageFile);
+					Log.d("WebServicesAdapter", "Bitmap image stored"+imageFile);// for testing
+					} catch (Exception e) {
+					e.printStackTrace();
+					}
+				try {
+					DownloadStoreImage bitmapImageLogo = new DownloadStoreImage
+										(json.getString("imageLinkLogo"));
+					Bitmap imageLogo = bitmapImageLogo.getImage();
+					Log.d("WebServicesAdapter", "Bitmap imageLogo downloaded "+json.getString(
+							"imageLinkLogo"));// for testing
+					String imageLogoFile = getImageFileName(json.getString("imageLinkLogo"));
+					bitmapImageLogo.StoreImage(imageLogo,imageLogoFile);
+					Log.d("WebServicesAdapter", "Bitmap imageLogo stored");// for testing
 					} catch (Exception e) {
 					e.printStackTrace();
 					}
@@ -181,6 +195,15 @@ public class WebServicesAdapter {
 	
 	
 	
+	private String getImageFileName(String imageLinkFull) {
+		int slashStart = imageLinkFull.lastIndexOf("/")+1;
+		String imageName = imageLinkFull.substring(slashStart, imageLinkFull.length());
+		Log.d("WebServicesAdapter", "imageName = "+imageName);// for testing	
+		return imageName;
+	}
+
+
+
 	public Boolean getSinglePubDetails(String pub) {
 		
 		Log.d("WebServicesAdapter", "In getSinglePubDetails");// for testing
@@ -196,7 +219,7 @@ public class WebServicesAdapter {
 			//Connect to webservices
 			
 			JSONQuery jsonQuery = new JSONQuery("http://beergarden.keoghser.com/" +
-					"getsinglepubdetails.php?singlepubdetails='"+pub+"'");
+					"getsinglepubdetails.php?singlepubdetails='"+replaceApostrophe(pub)+"'");
 			json = jsonQuery.getJSON();
 			jsonArray = jsonQuery.getJSONArray();
 			Log.i("WebServicesAdapter", "json is "+json);// for testing
@@ -217,8 +240,8 @@ public class WebServicesAdapter {
 							json.getDouble("locationEast"), json.getDouble("locationNorth"), 
 							json.getInt("seatingCapacity"), json.getString("phone"), 
 							json.getString("gardenSize"),json.getString("url"), 
-							json.getString("imageLink"), json.getString("description"), 
-							json.getString("updatedate"));
+							json.getString("imageLink"), json.getString("imageLinkLogo"),
+							json.getString("description"),json.getString("updatedate"));
 					} catch (JSONException e) {
 					e.printStackTrace();
 					}
@@ -226,9 +249,23 @@ public class WebServicesAdapter {
 					DownloadStoreImage bitmapImage = new DownloadStoreImage
 										(json.getString("imageLink"));
 					Bitmap image = bitmapImage.getImage();
-					Log.d("WebServicesAdapter", "Bitmap image downloaded "+json.getString("imageLink"));// for testing
-					bitmapImage.StoreImage(image,json.getString("name"));
-					Log.d("WebServicesAdapter", "Bitmap image stored");// for testing
+					Log.d("WebServicesAdapter", "Bitmap image downloaded "+json.getString(
+							"imageLink"));// for testing
+					String imageFile = getImageFileName(json.getString("imageLink"));
+					bitmapImage.StoreImage(image,imageFile);
+					Log.d("WebServicesAdapter", "Bitmap image stored"+imageFile);// for testing
+					} catch (Exception e) {
+					e.printStackTrace();
+					}
+				try {
+					DownloadStoreImage bitmapImageLogo = new DownloadStoreImage
+										(json.getString("imageLinkLogo"));
+					Bitmap imageLogo = bitmapImageLogo.getImage();
+					Log.d("WebServicesAdapter", "Bitmap imageLogo downloaded "+json.getString(
+							"imageLinkLogo"));// for testing
+					String imageLogoFile = getImageFileName(json.getString("imageLinkLogo"));
+					bitmapImageLogo.StoreImage(imageLogo,imageLogoFile);
+					Log.d("WebServicesAdapter", "Bitmap imageLogo stored");// for testing
 					} catch (Exception e) {
 					e.printStackTrace();
 					}
@@ -247,13 +284,13 @@ public class WebServicesAdapter {
 	}	
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	private String replaceApostrophe(String pub) {
+		pub.replace("'", "/'");
+		return pub;
+	}
+
+
+
 	public void AddToUpdateDatesWeb(String key, String value){
 		updateDatesWeb.put(key, value);
 		}

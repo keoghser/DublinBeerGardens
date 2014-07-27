@@ -23,6 +23,7 @@ public class DatabaseAdapter {
     static final String KEY_GARDEN_SIZE = "gardenSize";
     static final String KEY_URL = "url";
     static final String KEY_IMAGE_LINK = "imageLink";
+    static final String KEY_IMAGE_LINK_LOGO = "imageLinkLogo";
     static final String KEY_DESCRIPTION = "description";
     static final String KEY_UPDATE_DATE = "updatedate";
     static final String TAG = "beergarden";
@@ -41,7 +42,7 @@ public class DatabaseAdapter {
         + KEY_NAME+" text not null, "+KEY_ADDRESS+" text not null, "+KEY_LOCATION_EAST+" double not null, "
         + KEY_LOCATION_NORTH+" double not null, "+KEY_SEATING_CAPACITY+" int not null, "+KEY_PHONE+" text not null, "
         + KEY_GARDEN_SIZE+" int not null, "+KEY_URL+" text not null, "+KEY_IMAGE_LINK+" text not null, "
-        + KEY_DESCRIPTION+" text not null, "+KEY_UPDATE_DATE+" text not null);"; 
+        + KEY_IMAGE_LINK_LOGO+" text not null, " + KEY_DESCRIPTION+" text not null, "+KEY_UPDATE_DATE+" text not null);"; 
 
     /*static final String DB_VERSION_TABLE_CREATE =
             "create table databaseVersion (versionID integer primary key " +
@@ -127,7 +128,7 @@ public class DatabaseAdapter {
     public Cursor getAllBeerGardens(){
         return db.query(PUBDETAILS_TABLE, new String[] {KEY_ROWID, KEY_NAME,
         	    KEY_ADDRESS,KEY_LOCATION_EAST, KEY_LOCATION_NORTH,KEY_SEATING_CAPACITY,KEY_PHONE,
-        	    KEY_GARDEN_SIZE,KEY_URL,KEY_IMAGE_LINK,KEY_DESCRIPTION,
+        	    KEY_GARDEN_SIZE,KEY_URL,KEY_IMAGE_LINK,KEY_IMAGE_LINK_LOGO,KEY_DESCRIPTION,
         	    KEY_UPDATE_DATE }, null, null, null, null, KEY_NAME  + " ASC" );
         }
     
@@ -136,11 +137,14 @@ public class DatabaseAdapter {
 
     //---retrieves a particular Beergarden with a known ID---
     public Cursor getSingleBeerGarden(String name) throws SQLException {
+    	name= name.replaceAll("'", "\'");
+    	name='"'+name+'"';
         mCursor = db.query(true, PUBDETAILS_TABLE, new String[] {KEY_ROWID,
                 KEY_NAME, KEY_ADDRESS,KEY_LOCATION_EAST, KEY_LOCATION_NORTH,KEY_SEATING_CAPACITY,
-                KEY_PHONE,KEY_GARDEN_SIZE,KEY_URL,KEY_IMAGE_LINK,KEY_DESCRIPTION,
-        	    KEY_UPDATE_DATE}, KEY_NAME + "=" + name, null,
+                KEY_PHONE,KEY_GARDEN_SIZE,KEY_URL,KEY_IMAGE_LINK,KEY_IMAGE_LINK_LOGO,
+                KEY_DESCRIPTION,KEY_UPDATE_DATE}, KEY_NAME + "=" + name, null,
                 null, null, null, null);
+    	
         
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -212,7 +216,7 @@ public class DatabaseAdapter {
 	//---insert a pub into the database---
     public long insertPubDetails(String name, String address, double locationEast, 
     		double locationNorth, int seating, String phone, String garden,
-    		String url, String imageLink, String description, String updatedate) {
+    		String url, String imageLink, String imageLinkLogo,String description, String updatedate) {
     	
        //String apostropheName = name.replace("'", "€"); 
        
@@ -226,6 +230,7 @@ public class DatabaseAdapter {
         initialValues.put(KEY_GARDEN_SIZE, garden);
         initialValues.put(KEY_URL, url);
         initialValues.put(KEY_IMAGE_LINK, imageLink);
+        initialValues.put(KEY_IMAGE_LINK_LOGO, imageLinkLogo);
         initialValues.put(KEY_DESCRIPTION, description);
         initialValues.put(KEY_UPDATE_DATE, updatedate);
      

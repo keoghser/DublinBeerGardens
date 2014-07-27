@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="#555960">
+    
+    <ImageView
+        android:id="@+id/beergardenImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#555960"/>
+
+    <TextView 
+        android:id="@+id/beergardenTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:textColor="#555960"
+        android:paddingLeft="30dp"
+        android:textStyle="bold"
+        android:gravity="bottom"
+        android:textSize="16dp"/>
+    
+   <TextView 
+        android:id="@+id/beergardenAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"        
+        android:background="#FFFFFF"
+        android:textColor="#555960"
+        android:paddingLeft="30dp"
+        android:gravity="top"
+        android:textSize="12dp"/>
+   
+<LinearLayout 
+    	android:orientation="vertical"
+        android:id="@+id/Blur"  
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:background="@drawable/blur">
+        <!--  android:background="#FF0000" red -->
+   
+   
+	<RelativeLayout 
+    	android:orientation="vertical"
+        android:id="@+id/infoBlur"  
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:background="#555960"><!--#2F4F4F" Azure blue --><!--#555960 -->
+	
+    	<TextView 
+        android:id="@+id/beergardenSeating"
+        android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"/>
+    
+    	<TextView 
+        android:id="@+id/beergardenSize"
+        android:layout_below="@id/beergardenSeating" 
+        android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"/>
+    
+		<TextView 
+        android:id="@+id/beergardenPhone"
+        android:layout_below="@id/beergardenSize" 
+        android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"/>
+       
+        <TextView 
+        android:id="@+id/beergardenWeb"
+        android:layout_below="@id/beergardenPhone" 
+        android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"/>
+        
+        <TextView 
+        android:id="@+id/beergardenDescription"
+        android:layout_below="@id/beergardenWeb" 
+        android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"/>
+    
+    </RelativeLayout>
+
+<RelativeLayout
+     	android:orientation="horizontal"
+        android:id="@+id/social"  
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:background="#555960">
+       <!--  android:background="#FFFF00" > orange -->
+
+		<ImageButton
+		    android:id="@+id/facebook"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/facebook" 
+		    android:background="#555960"/><!--#00FF00 green -->
+
+		<ImageButton
+		    android:id="@+id/twitter"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/facebook"
+		    android:src="@drawable/twitter"
+		    android:background="#555960" /><!-- green -->
+
+		<ImageButton
+		    android:id="@+id/message"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/twitter"
+		     android:src="@drawable/message"
+		     android:background="#555960" /><!-- green -->
+
+		<ImageButton
+		    android:id="@+id/mail"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		   	android:layout_toRightOf="@+id/message"
+		    android:src="@drawable/mail"
+		    android:background="#555960" /><!-- green -->
+
+    </RelativeLayout>
+ </LinearLayout>   
+</LinearLayout>
