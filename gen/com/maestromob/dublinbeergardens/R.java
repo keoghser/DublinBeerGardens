@@ -376,7 +376,7 @@ containing a value of this type.
         public static final int com_facebook_list_section_header_background=0x7f02000e;
         public static final int com_facebook_loginbutton_silver=0x7f02000f;
         public static final int com_facebook_logo=0x7f020010;
-        public static final int com_facebook_picker_default_separator_color=0x7f020051;
+        public static final int com_facebook_picker_default_separator_color=0x7f020052;
         public static final int com_facebook_picker_item_background=0x7f020011;
         public static final int com_facebook_picker_list_focused=0x7f020012;
         public static final int com_facebook_picker_list_longpressed=0x7f020013;
@@ -426,25 +426,26 @@ containing a value of this type.
         public static final int common_signin_btn_text_pressed_dark=0x7f02003f;
         public static final int common_signin_btn_text_pressed_light=0x7f020040;
         public static final int facebook=0x7f020041;
-        public static final int ic_launcher=0x7f020042;
-        public static final int ic_plusone_medium_off_client=0x7f020043;
-        public static final int ic_plusone_small_off_client=0x7f020044;
-        public static final int ic_plusone_standard_off_client=0x7f020045;
-        public static final int ic_plusone_tall_off_client=0x7f020046;
-        public static final int mail=0x7f020047;
-        public static final int message=0x7f020048;
-        public static final int pub_label2=0x7f020049;
-        public static final int pub_label2_large=0x7f02004a;
-        public static final int pub_label3=0x7f02004b;
-        public static final int pub_label4=0x7f02004c;
-        public static final int pub_link2=0x7f02004d;
-        public static final int pub_pin1=0x7f02004e;
-        public static final int splash=0x7f02004f;
-        public static final int twitter=0x7f020050;
+        public static final int facebook_share=0x7f020042;
+        public static final int ic_launcher=0x7f020043;
+        public static final int ic_plusone_medium_off_client=0x7f020044;
+        public static final int ic_plusone_small_off_client=0x7f020045;
+        public static final int ic_plusone_standard_off_client=0x7f020046;
+        public static final int ic_plusone_tall_off_client=0x7f020047;
+        public static final int mail=0x7f020048;
+        public static final int message=0x7f020049;
+        public static final int pub_label2=0x7f02004a;
+        public static final int pub_label2_large=0x7f02004b;
+        public static final int pub_label3=0x7f02004c;
+        public static final int pub_label4=0x7f02004d;
+        public static final int pub_link2=0x7f02004e;
+        public static final int pub_pin1=0x7f02004f;
+        public static final int splash=0x7f020050;
+        public static final int twitter=0x7f020051;
     }
     public static final class id {
         public static final int Blur=0x7f05002e;
-        public static final int action_settings=0x7f05003a;
+        public static final int action_settings=0x7f050040;
         public static final int beergardenAddress=0x7f05002d;
         public static final int beergardenDescription=0x7f050034;
         public static final int beergardenImage=0x7f05002b;
@@ -454,6 +455,9 @@ containing a value of this type.
         public static final int beergardenSize=0x7f050031;
         public static final int beergardenTitle=0x7f05002c;
         public static final int beergardenWeb=0x7f050033;
+        public static final int btnLoginTwitter=0x7f05003a;
+        public static final int btnLogoutTwitter=0x7f05003f;
+        public static final int btnUpdateStatus=0x7f05003e;
         public static final int com_facebook_body_frame=0x7f05001d;
         public static final int com_facebook_button_xout=0x7f05001f;
         public static final int com_facebook_login_activity_progress_bar=0x7f05000d;
@@ -486,6 +490,8 @@ containing a value of this type.
         public static final int infoBlur=0x7f05002f;
         public static final int info_fragment=0x7f050009;
         public static final int large=0x7f050002;
+        public static final int lblUpdate=0x7f05003c;
+        public static final int lblUserName=0x7f05003b;
         public static final int mail=0x7f050039;
         public static final int map=0x7f050007;
         public static final int message=0x7f050038;
@@ -502,6 +508,7 @@ containing a value of this type.
         public static final int social=0x7f050035;
         public static final int terrain=0x7f050005;
         public static final int twitter=0x7f050037;
+        public static final int txtUpdateStatus=0x7f05003d;
     }
     public static final class integer {
         public static final int google_play_services_version=0x7f0a0000;
@@ -529,6 +536,7 @@ containing a value of this type.
         public static final int map_info_window_large=0x7f030013;
         public static final int pubdetails_image_fragment=0x7f030014;
         public static final int pubdetails_info_fragment=0x7f030015;
+        public static final int twitter_layout=0x7f030016;
     }
     public static final class menu {
         public static final int activity_splash=0x7f0b0000;
@@ -536,6 +544,7 @@ containing a value of this type.
     }
     public static final class string {
         public static final int action_settings=0x7f080036;
+        public static final int app_id=0x7f080039;
         public static final int app_name=0x7f080034;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 

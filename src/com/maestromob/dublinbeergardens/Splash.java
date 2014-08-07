@@ -13,9 +13,11 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 import com.maestromob.dublinbeergardens.helpers.DatabaseAdapter;
@@ -42,6 +44,7 @@ public class Splash extends Activity {
 	    	
 	    progressBar = (ProgressBar)findViewById(R.id.progressbar);
 	  	new AsyncWebServices().execute();
+	  	Toast.makeText(getBaseContext(), "Getting pub details...", Toast.LENGTH_SHORT).show();
 	  	    
 	  	SharedPreferences dbActivity = getSharedPreferences(
 				  "com.maestromob.dublinbeergardens_preferences", MODE_PRIVATE); 
@@ -69,6 +72,7 @@ public class Splash extends Activity {
 	    	 
 	    	 protected Void doInBackground(Void... voids){
 	               // load your JSON feed asynchronously
+	    		
 	        	 if(createDatabase()){
 	 	    		db = new DatabaseAdapter(getApplicationContext());
 	 	    		web = new WebServicesAdapter(getApplicationContext());
@@ -80,6 +84,7 @@ public class Splash extends Activity {
 	 	    		Log.d("Splash", "doInBackground DATABASE_VERSION = "+db.getDATABASE_VERSION());// for testing
 	 	    		
 	 	    			if(sharedPrefVersion==0){
+	 	    				
 	 			    	//if(versionNumber==0){// Although DATABASE_VERSION is 1, 
 	 			    						//This is set to version 0 when DB first created
 	 			    						//Activated the first time the webservices is run
@@ -94,7 +99,8 @@ public class Splash extends Activity {
 	 			    		int JSONVersion = web.checkJSONVersion();
 	 			    			 			    		
 	 			    		if(JSONVersion>sharedPrefVersion){
-	 			    		//if (JSONVersion>versionNumber){
+	 			    			
+	 			    			//if (JSONVersion>versionNumber){
 	 			    			Log.d("Splash", "In jsonvERSION>sharedPrefVersion "+sharedPrefVersion);// for testing
 	 			    			Log.d("Splash", "JSONVersion is greater than sharedPrefVersion");// for testing
 	 			    			//Update entire DB
@@ -197,7 +203,9 @@ public class Splash extends Activity {
 	    		Log.d("Splash", "Out of date PubDetails are "+outOfDatePubs.get(i));
 	    		}
 	    	}
-			
+	
+    
+   	
 }
 	
 	

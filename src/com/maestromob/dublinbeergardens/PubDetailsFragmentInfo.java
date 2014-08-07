@@ -31,7 +31,15 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
+import android.widget.Toast;
 
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Session;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.maestromob.dublinbeergardens.helpers.DatabaseAdapter;
 
 
@@ -48,6 +56,7 @@ public class PubDetailsFragmentInfo extends Fragment{
 	int height;
 	String image;
 	String text ="";
+	private UiLifecycleHelper uiHelper;
 
 
 	public void onAttach(Activity activity) {
@@ -90,7 +99,7 @@ public class PubDetailsFragmentInfo extends Fragment{
 				"fonts/Roboto-Bold.ttf");
 		
 		text = "Join me for a drink in the beergarden at " +
-				""+cursor.getString(1)+" pub, "+cursor.getString(2);
+				""+cursor.getString(1)+" pub, "+cursor.getString(2)+".";
 				
 		String pathToImageFile = Environment.getExternalStorageDirectory()
 						.getAbsoluteFile()+"/Beergardens/"+image;
@@ -151,14 +160,14 @@ public class PubDetailsFragmentInfo extends Fragment{
 		TextView pubSeating = (TextView) inflatedView.findViewById(R.id.beergardenSeating);
 		pubSeating.setTypeface(typeFace);
 		pubSeating.setPadding((int) (width*0.07),(int)(height*0.01),0,0);
-		pubSeating.setText(Html.fromHtml("<u>Seating Capacity:</u>"));
-		pubSeating.append(" "+cursor.getString(5));
+		pubSeating.setText(Html.fromHtml("<u>Capacity:</u>"));
+		pubSeating.append(" "+cursor.getString(5)+" persons");
 		
 		TextView pubPhone = (TextView) inflatedView.findViewById(R.id.beergardenPhone);
 		pubPhone.setTypeface(typeFace);
 		pubPhone.setPadding((int) (width*0.07),(int)(height*0.01),0,0);
 		pubPhone.setText(Html.fromHtml("<u>Phone:</u>"));
-		pubPhone.append(" "+cursor.getString(6));
+		pubPhone.append(" "+"01 "+cursor.getString(6).substring(2));
 		pubPhone.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
             	Uri phone = Uri.parse("tel:"+cursor.getString(6));
@@ -202,11 +211,17 @@ public class PubDetailsFragmentInfo extends Fragment{
 			facebook.setPadding((int) (width*0.07),0,(int)(width*0.07),(int)(height*0.01));
 			facebook.getBackground().setAlpha(0);
 			facebook.setScaleType(ScaleType.FIT_XY);
-			
 			facebook.setOnClickListener(new View.OnClickListener() { // Set onClickListener
 	        	public void onClick(View view) { // Create onClick Method, what is done when button is clicked
 		        	 Log.d("PubDetailsFragmentInfo", "facebook button clicked"); // for testing
-		        	}});
+		        	Intent i = new Intent(view.getContext(), FacebookActivity.class);
+		        	i.putExtra("pub", cursor.getString(1));
+		        	i.putExtra("address", cursor.getString(2));
+		        	startActivity(i);
+		        	Toast.makeText(getActivity(), "Posting to Facebook, please wait...", Toast.LENGTH_LONG).show();
+		       }});
+			
+			
 			
 			ImageButton twitter = (ImageButton) inflatedView.findViewById(R.id.twitter);
 			twitter.setPadding(0,0,(int)(width*0.07),(int)(height*0.01));
@@ -215,7 +230,18 @@ public class PubDetailsFragmentInfo extends Fragment{
 			twitter.setOnClickListener(new View.OnClickListener() { // Set onClickListener
 	        	public void onClick(View view) { // Create onClick Method, what is done when button is clicked
 		        	 Log.d("PubDetailsFragmentInfo", "twitter button clicked"); // for testing
-		        	}});
+		        	 String tweetUrl = "https://twitter.com/intent/tweet?text="+"DUBLIN BEER GARDENS: "+text;
+		        	 Uri uri = Uri.parse(tweetUrl);
+		        	 
+		        	 try {
+		        		 startActivity(new Intent(Intent.ACTION_VIEW, uri));
+		        		 Toast.makeText(getActivity(), "Posting to Twitter, please wait...", 
+		        				 Toast.LENGTH_LONG).show();	
+		            } catch (android.content.ActivityNotFoundException e) {
+		                 Toast.makeText(getActivity(), "Can't send tweet! Please install twitter...", 2).show();
+		             }
+	        	}});
+			
 			
 			ImageButton message = (ImageButton) inflatedView.findViewById(R.id.message);
 			message.setPadding(0,0,(int)(width*0.07),(int)(height*0.01));
@@ -229,6 +255,7 @@ public class PubDetailsFragmentInfo extends Fragment{
 		        	 i.setType("vnd.android-dir/mms-sms");
 		        	 startActivity(i);
 	        		}});
+			
 			
 			ImageButton mail = (ImageButton) inflatedView.findViewById(R.id.mail);
 			mail.setPadding(0,0,(int)(width*0.06),(int)(height*0.01));
@@ -272,6 +299,32 @@ public class PubDetailsFragmentInfo extends Fragment{
 		Log.d("PubDetailsFragmentInfo ", "imageName = "+imageName);// for testing	
 		return imageName;
 	}
+	
+	
+	@Override
+	public void onResume() {
+	        super.onResume();
+	    }
+
+ 	@Override
+	public void onSaveInstanceState(Bundle outState) {
+	        super.onSaveInstanceState(outState);
+	        
+	    }
+
+	@Override
+	public void onPause() {
+	        super.onPause();
+	       
+	    }
+
+	@Override
+	public void onDestroy() {
+	        super.onDestroy();
+	        
+	    }
+	
+
 	
 	
 	

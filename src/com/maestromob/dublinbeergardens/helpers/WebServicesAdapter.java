@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 
 public class WebServicesAdapter {
@@ -217,7 +218,6 @@ public class WebServicesAdapter {
 		if (mWifi.isConnected()) {
 			Log.d("WebServicesAdapter", "getSinglePubDetails, WiFi IS connected");// for testing
 			//Connect to webservices
-			
 			JSONQuery jsonQuery = new JSONQuery("http://beergarden.keoghser.com/" +
 					"getsinglepubdetails.php?singlepubdetails='"+replaceApostrophe(pub)+"'");
 			json = jsonQuery.getJSON();
